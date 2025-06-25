@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación del Proyecto - Sistema de Gestión Salfa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .section h3 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 5px solid #3498db;
+        }
+        
+        .card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .feature-card h4 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .table th {
+            background: #3498db;
+            color: white;
+        }
+        
+        .table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        
+        .flow-diagram {
+            background: #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .flow-step {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 5px;
+        }
+        
+        .arrow {
+            color: #3498db;
+            font-size: 1.5em;
+            margin: 0 10px;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .tech-tag {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .folder-structure {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .folder {
+            margin: 5px 0;
+        }
+        
+        .folder-icon {
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+        
+        .folder-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .folder-content {
+            margin-left: 25px;
+            border-left: 2px solid #3498db;
+            padding-left: 15px;
+            margin-top: 5px;
+        }
+        
+        .file {
+            margin: 3px 0;
+            padding: 2px 0;
+            color: #7f8c8d;
+        }
+        
+        .highlight-file {
+            color: #e74c3c;
+            font-weight: bold;
+            background: rgba(231, 76, 60, 0.1);
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+        
+        code {
+            background: #f1f2f6;
+            color: #e74c3c;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚗 Sistema de Gestión Salfa</h1>
+            <p>Documentación Técnica - Base de Datos e Integraciones</p>
+        </div>
+
+        <!-- Resumen del Proyecto -->
+        <div class="section">
+            <h2>📋 Resumen del Proyecto</h2>
+            <p>Este es un sistema web completo para la gestión de reservas de vehículos y maquinarias con integración de pagos Transbank. Desarrollado en Flask con funcionalidades de administración, reservas, pagos y notificaciones.</p>
+            
+            <div class="grid">
+                <div class="feature-card">
+                    <h4>🔐 Autenticación</h4>
+                    <p>Usuarios y administradores con roles diferenciados</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🚗 Gestión de Flota</h4>
+                    <p>19 vehículos y maquinarias con imágenes</p>
+                </div>
+                <div class="feature-card">
+                    <h4>💳 Pagos Transbank</h4>
+                    <p>Integración completa con Webpay Plus</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📊 Panel Admin</h4>
+                    <p>Gestión completa de usuarios, reservas y pagos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Base de Datos -->
+        <div class="section">
+            <h2>🗄️ Base de Datos</h2>
+            <p>El sistema utiliza SQLite como base de datos principal, con un esquema relacional bien estructurado que incluye 6 tablas principales:</p>
+
+            <div class="card">
+                <h3>📊 Estructura de Tablas</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Tabla</th>
+                            <th>Propósito</th>
+                            <th>Campos Principales</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>User</strong></td>
+                            <td>Gestión de usuarios</td>
+                            <td>id, username, email, password_hash, is_admin</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vehicle</strong></td>
+                            <td>Vehículos y maquinarias</td>
+                            <td>id, name, model, price_per_day, category, image_url</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reservation</strong></td>
+                            <td>Reservas de usuarios</td>
+                            <td>id, user_id, vehicle_id, start_date, end_date, total_price</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Payment</strong></td>
+                            <td>Transacciones de pago</td>
+                            <td>id, reservation_id, amount, status, token, transbank_response</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Notification</strong></td>
+                            <td>Sistema de notificaciones</td>
+                            <td>id, user_id, title, message, type, read</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MaintenanceRecord</strong></td>
+                            <td>Registros de mantenimiento</td>
+                            <td>id, vehicle_id, maintenance_type, description, cost</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>🔗 Relaciones Principales</h3>
+                <div class="code-block">
+User (1) ←→ (N) Reservation ←→ (1) Vehicle
+User (1) ←→ (N) Notification
+Vehicle (1) ←→ (N) MaintenanceRecord
+Reservation (1) ←→ (N) Payment
+                </div>
+            </div>
+
+            <div class="highlight">
+                <strong>💡 Características de la Base de Datos:</strong>
+                <ul>
+                    <li>✅ SQLite para desarrollo y pruebas</li>
+                    <li>✅ Migraciones automáticas con Flask-SQLAlchemy</li>
+                    <li>✅ Relaciones bien definidas entre entidades</li>
+                    <li>✅ Campos de auditoría (created_at, updated_at)</li>
+                    <li>✅ Estados de transacciones para seguimiento</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Integraciones -->
+        <div class="section">
+            <h2>🔌 Integraciones del Sistema</h2>
+            
+            <div class="card">
+                <h3>💳 Integración Transbank (Webpay Plus)</h3>
+                <p><strong>Propósito:</strong> Procesamiento de pagos en línea con tarjetas de crédito/débito</p>
+                <p><strong>Ubicación:</strong> <code>app/services/payment_service.py</code></p>
+                
+                <div class="flow-diagram">
+                    <div class="flow-step">1. Usuario crea reserva</div>
+                    <span class="arrow">→</span>
+                    <div class="flow-step">2. Redirección a Transbank</div>
+                    <span class="arrow">→</span>
+                    <div class="flow-step">3. Usuario paga</div>
+                    <span class="arrow">→</span>
+                    <div class="flow-step">4. Confirmación automática</div>
+                </div>
+
+                <div class="code-block">
+# Configuración Transbank
+TRANSBANK_COMMERCE_CODE = "597055555532"
+TRANSBANK_API_KEY = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C"
+TRANSBANK_ENVIRONMENT = "TEST"
+                </div>
+
+                <div class="highlight">
+                    <strong>🔗 Endpoints Principales:</strong>
+                    <ul>
+                        <li><code>POST /payment/create</code> - Crear transacción de pago</li>
+                        <li><code>GET /payment/return</code> - Confirmación desde Transbank</li>
+                        <li><code>POST /payment/retry</code> - Reintentar pago fallido</li>
+                        <li><code>GET /payment/status/{token}</code> - Consultar estado</li>
+                    </ul>
+                </div>
+
+                <div class="success">
+                    <strong>✅ Funcionalidades Implementadas:</strong>
+                    <ul>
+                        <li>Creación de transacciones de pago</li>
+                        <li>Confirmación automática de pagos</li>
+                        <li>Reintentos para transacciones fallidas</li>
+                        <li>Consulta de estado de transacciones</li>
+                        <li>Procesamiento de reembolsos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💰 API de Indicadores Económicos (mindicador.cl)</h3>
+                <p><strong>Propósito:</strong> Obtener valores actualizados de UF y USD para conversiones de moneda</p>
+                <p><strong>Ubicación:</strong> <code>app/utils/mindicador.py</code></p>
+                
+                <div class="code-block">
+def get_currency_values():
+    response = requests.get('https://mindicador.cl/api')
+    data = response.json()
+    return {
+        'uf': float(data['uf']['valor']),
+        'usd': float(data['dolar']['valor'])
+    }
+                </div>
+
+                <div class="highlight">
+                    <strong>🔗 Endpoints Disponibles:</strong>
+                    <ul>
+                        <li><code>GET /api/currency/uf</code> - Obtener valor actual de UF</li>
+                        <li><code>GET /api/currency/usd</code> - Obtener valor actual de USD</li>
+                        <li><code>GET /api/currency/convert</code> - Convertir entre monedas</li>
+                    </ul>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ Nota:</strong> Esta integración permite mostrar precios en diferentes monedas y realizar conversiones automáticas según los indicadores del Banco Central de Chile.
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📧 Sistema de Notificaciones</h3>
+                <p><strong>Propósito:</strong> Notificaciones en tiempo real para usuarios y administradores</p>
+                <p><strong>Ubicación:</strong> <code>app/models.py</code> (modelo Notification)</p>
+                
+                <div class="code-block">
+# Tipos de notificaciones
+- info: Información general
+- warning: Advertencias
+- error: Errores del sistema
+- success: Confirmaciones exitosas
+                </div>
+
+                <div class="highlight">
+                    <strong>🔗 Endpoints del Sistema:</strong>
+                    <ul>
+                        <li><code>GET /notifications</code> - Listar notificaciones del usuario</li>
+                        <li><code>POST /notifications/mark-read</code> - Marcar como leída</li>
+                        <li><code>DELETE /notifications/{id}</code> - Eliminar notificación</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Arquitectura del Sistema -->
+        <div class="section">
+            <h2>🏗️ Arquitectura del Sistema</h2>
+            
+            <div class="card">
+                <h3>📁 Estructura de Carpetas</h3>
+                <div class="folder-structure">
+                    <div class="folder">
+                        <span class="folder-icon">📁</span>
+                        <span class="folder-name">IntegracionPlataformaUltimo/</span>
+                        <div class="folder-content">
+                            <div class="folder">
+                                <span class="folder-icon">📁</span>
+                                <span class="folder-name">app/</span>
+                                <div class="folder-content">
+                                    <div class="file">📄 __init__.py</div>
+                                    <div class="file">📄 models.py</div>
+                                    <div class="folder">
+                                        <span class="folder-icon">📁</span>
+                                        <span class="folder-name">auth/</span>
+                                        <div class="folder-content">
+                                            <div class="file">📄 __init__.py</div>
+                                            <div class="file">📄 routes.py</div>
+                                        </div>
+                                    </div>
+                                    <div class="folder">
+                                        <span class="folder-icon">📁</span>
+                                        <span class="folder-name">main/</span>
+                                        <div class="folder-content">
+                                            <div class="file">📄 __init__.py</div>
+                                            <div class="file">📄 routes.py</div>
+                                        </div>
+                                    </div>
+                                    <div class="folder">
+                                        <span class="folder-icon">📁</span>
+                                        <span class="folder-name">services/</span>
+                                        <div class="folder-content">
+                                            <div class="file">📄 __init__.py</div>
+                                            <div class="file highlight-file">💳 payment_service.py</div>
+                                        </div>
+                                    </div>
+                                    <div class="folder">
+                                        <span class="folder-icon">📁</span>
+                                        <span class="folder-name">static/</span>
+                                        <div class="folder-content">
+                                            <div class="folder">
+                                                <span class="folder-icon">📁</span>
+                                                <span class="folder-name">css/</span>
+                                                <div class="folder-content">
+                                                    <div class="file">📄 style.css</div>
+                                                </div>
+                                            </div>
+                                            <div class="folder">
+                                                <span class="folder-icon">📁</span>
+                                                <span class="folder-name">js/</span>
+                                                <div class="folder-content">
+                                                    <div class="file">📄 main.js</div>
+                                                </div>
+                                            </div>
+                                            <div class="folder">
+                                                <span class="folder-icon">📁</span>
+                                                <span class="folder-name">img/</span>
+                                                <div class="folder-content">
+                                                    <div class="file">🖼️ 19 imágenes de vehículos</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="folder">
+                                        <span class="folder-icon">📁</span>
+                                        <span class="folder-name">templates/</span>
+                                        <div class="folder-content">
+                                            <div class="file">📄 base.html</div>
+                                            <div class="file">📄 index.html</div>
+                                            <div class="folder">
+                                                <span class="folder-icon">📁</span>
+                                                <span class="folder-name">auth/</span>
+                                                <div class="folder-content">
+                                                    <div class="file">📄 login.html</div>
+                                                    <div class="file">📄 register.html</div>
+                                                </div>
+                                            </div>
+                                            <div class="file">📄 vehiculos.html</div>
+                                            <div class="file">📄 maquinaria.html</div>
+                                            <div class="file">📄 admin.html</div>
+                                        </div>
+                                    </div>
+                                    <div class="folder">
+                                        <span class="folder-icon">📁</span>
+                                        <span class="folder-name">utils/</span>
+                                        <div class="folder-content">
+                                            <div class="file">📄 currency.py</div>
+                                            <div class="file highlight-file">💰 mindicador.py</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="folder">
+                                <span class="folder-icon">📁</span>
+                                <span class="folder-name">scripts/</span>
+                                <div class="folder-content">
+                                    <div class="file">📄 init_db.py</div>
+                                    <div class="file">📄 init_admin.py</div>
+                                    <div class="file">📄 add_all_vehicles.py</div>
+                                </div>
+                            </div>
+                            <div class="folder">
+                                <span class="folder-icon">📁</span>
+                                <span class="folder-name">docs/</span>
+                                <div class="folder-content">
+                                    <div class="file">📄 README.md</div>
+                                </div>
+                            </div>
+                            <div class="file">📄 config.py</div>
+                            <div class="file">📄 requirements.txt</div>
+                            <div class="file">📄 run.py</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🛠️ Stack Tecnológico</h3>
+                <div class="tech-stack">
+                    <span class="tech-tag">Flask 3.0.2</span>
+                    <span class="tech-tag">SQLAlchemy</span>
+                    <span class="tech-tag">Flask-Login</span>
+                    <span class="tech-tag">Transbank SDK</span>
+                    <span class="tech-tag">Bootstrap</span>
+                    <span class="tech-tag">SQLite</span>
+                    <span class="tech-tag">Python 3.8+</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flujo de Datos -->
+        
+        <!-- Configuración y Despliegue -->
+        <div class="section">
+            <h2>⚙️ Configuración y Despliegue</h2>
+            
+            <div class="card">
+                <h3>🔧 Variables de Entorno</h3>
+                <div class="code-block">
+# Configuración de la aplicación
+SECRET_KEY = "tu-clave-secreta-aqui"
+DATABASE_URL = "sqlite:///instance/database.db"
+
+# Configuración de Transbank (ambiente de prueba)
+TRANSBANK_COMMERCE_CODE = "597055555532"
+TRANSBANK_API_KEY = "0208f0a6fa6a6a1a1a1a1a1a1a1a1a1a"
+TRANSBANK_ENVIRONMENT = "TEST"
+TRANSBANK_RETURN_URL = "http://127.0.0.1:5000/payment/return"
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Comandos de Inicialización</h3>
+                <div class="code-block">
+# Crear entorno virtual
+python -m venv venv
+venv\Scripts\activate
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Inicializar base de datos
+python scripts/init_payment_db.py
+
+# Cargar datos de ejemplo
+python scripts/add_all_vehicles.py
+
+# Ejecutar aplicación
+python run.py
+                </div>
+            </div>
+
+            <div class="success">
+                <strong>✅ Credenciales de Prueba Transbank:</strong>
+                <ul>
+                    <li><strong>Tarjeta:</strong> 4051 8856 0044 6623</li>
+                    <li><strong>Fecha:</strong> Cualquier fecha futura</li>
+                    <li><strong>CVV:</strong> Cualquier número de 3 dígitos</li>
+                    <li><strong>RUT:</strong> 11.111.111-1</li>
+                    <li><strong>Clave:</strong> 123</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Estadísticas del Sistema -->
+        <div class="section">
+            <h2>📊 Estadísticas del Sistema</h2>
+            
+            <div class="grid">
+                <div class="feature-card">
+                    <h4>🚗 Vehículos</h4>
+                    <p><strong>10 vehículos</strong> disponibles para alquiler</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🏗️ Maquinarias</h4>
+                    <p><strong>9 maquinarias</strong> para proyectos especializados</p>
+                </div>
+                <div class="feature-card">
+                    <h4>💳 Pagos</h4>
+                    <p><strong>Integración completa</strong> con Transbank Webpay Plus</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔐 Seguridad</h4>
+                    <p><strong>Autenticación robusta</strong> con roles diferenciados</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="section" style="text-align: center; background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+            <h2>🎯 Conclusión</h2>
+            <p>Este sistema representa una solución completa para la gestión de flotas de vehículos y maquinarias, con integración de pagos profesionales y una arquitectura escalable. La base de datos está bien estructurada y las integraciones externas proporcionan funcionalidades robustas para un entorno de producción.</p>
+            <br>
+            <p><strong>Desarrollado con ❤️ para Salfa</strong></p>
+        </div>
+    </div>
+</body>
+</html>
