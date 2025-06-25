@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container mt-5">
+    <h3>Redirigiendo a Webpay...</h3>
+    <p>Si no eres redirigido automáticamente, haz clic en el botón:</p>
+    <form id="webpay-form" action="{{ url }}" method="POST">
+      <input type="hidden" name="token_ws" value="{{ token }}">
+      <button type="submit" class="btn btn-primary">Ir a Webpay</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById('webpay-form').submit();
+  </script>
+{% endblock %} 

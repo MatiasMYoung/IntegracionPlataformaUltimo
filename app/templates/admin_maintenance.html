@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Mantenimiento{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-tools"></i> Gestión de Mantenimiento</h2>
+            <p class="text-muted">Administra el mantenimiento de vehículos y maquinaria.</p>
+            
+            <!-- Alertas de mantenimiento -->
+            {% if vehicles_needing_maintenance %}
+            <div class="alert alert-warning" role="alert">
+                <h5><i class="fas fa-exclamation-triangle"></i> Vehículos que Requieren Atención</h5>
+                <p>Hay {{ vehicles_needing_maintenance|length }} vehículos que necesitan mantenimiento o están próximos a su fecha programada.</p>
+            </div>
+            {% endif %}
+            
+            <!-- Estadísticas de mantenimiento -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h4>{{ vehicles_needing_maintenance|length }}</h4>
+                            <p>Necesitan Mantenimiento</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h4>{{ recent_maintenance|selectattr('status', 'equalto', 'completed')|list|length }}</h4>
+                            <p>Mantenimientos Completados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body text-center">
+                            <h4>{{ recent_maintenance|selectattr('status', 'equalto', 'in_progress')|list|length }}</h4>
+                            <p>En Progreso</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h4>{{ recent_maintenance|selectattr('status', 'equalto', 'scheduled')|list|length }}</h4>
+                            <p>Programados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vehículos que necesitan mantenimiento -->
+            {% if vehicles_needing_maintenance %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Vehículos que Requieren Mantenimiento</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Vehículo</th>
+                                    <th>Modelo</th>
+                                    <th>Estado</th>
+                                    <th>Último Mantenimiento</th>
+                                    <th>Próximo Mantenimiento</th>
+                                    <th>Horas de Uso</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vehicle in vehicles_needing_maintenance %}
+                                <tr class="{% if vehicle.maintenance_status == 'maintenance' %}table-warning{% endif %}">
+                                    <td><strong>{{ vehicle.name }}</strong></td>
+                                    <td>{{ vehicle.model }}</td>
+                                    <td>
+                                        {% if vehicle.maintenance_status == 'operational' %}
+                                            <span class="badge bg-success">Operacional</span>
+                                        {% elif vehicle.maintenance_status == 'maintenance' %}
+                                            <span class="badge bg-warning">En Mantenimiento</span>
+                                        {% elif vehicle.maintenance_status == 'out_of_service' %}
+                                            <span class="badge bg-danger">Fuera de Servicio</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if vehicle.last_maintenance %}
+                                            {{ vehicle.last_maintenance.strftime('%d/%m/%Y') }}
+                                        {% else %}
+                                            <span class="text-muted">Nunca</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if vehicle.next_maintenance %}
+                                            {% if vehicle.next_maintenance <= now %}
+                                                <span class="badge bg-danger">VENCIDO</span>
+                                            {% else %}
+                                                {{ vehicle.next_maintenance.strftime('%d/%m/%Y') }}
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">No programado</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ vehicle.total_usage_hours|round(1) }} hrs</td>
+                                    <td>
+                                        <a href="{{ url_for('main.add_maintenance') }}?vehicle_id={{ vehicle.id }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-tools"></i> Programar Mantenimiento
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Registros de mantenimiento recientes -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5><i class="fas fa-history"></i> Registros de Mantenimiento Recientes</h5>
+                    <a href="{{ url_for('main.add_maintenance') }}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Nuevo Mantenimiento
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Vehículo</th>
+                                    <th>Tipo</th>
+                                    <th>Descripción</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
+                                    <th>Estado</th>
+                                    <th>Costo</th>
+                                    <th>Realizado por</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for maintenance in recent_maintenance %}
+                                <tr>
+                                    <td><strong>{{ maintenance.vehicle.name }}</strong></td>
+                                    <td>
+                                        {% if maintenance.maintenance_type == 'preventive' %}
+                                            <span class="badge bg-info">Preventivo</span>
+                                        {% elif maintenance.maintenance_type == 'corrective' %}
+                                            <span class="badge bg-warning">Correctivo</span>
+                                        {% elif maintenance.maintenance_type == 'emergency' %}
+                                            <span class="badge bg-danger">Emergencia</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ maintenance.description[:50] }}{% if maintenance.description|length > 50 %}...{% endif %}</td>
+                                    <td>{{ maintenance.start_date.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        {% if maintenance.end_date %}
+                                            {{ maintenance.end_date.strftime('%d/%m/%Y') }}
+                                        {% else %}
+                                            <span class="text-muted">En progreso</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if maintenance.status == 'scheduled' %}
+                                            <span class="badge bg-secondary">Programado</span>
+                                        {% elif maintenance.status == 'in_progress' %}
+                                            <span class="badge bg-warning">En Progreso</span>
+                                        {% elif maintenance.status == 'completed' %}
+                                            <span class="badge bg-success">Completado</span>
+                                        {% elif maintenance.status == 'cancelled' %}
+                                            <span class="badge bg-danger">Cancelado</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if maintenance.cost %}
+                                            ${{ "{:,.0f}".format(maintenance.cost) }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ maintenance.performed_by or 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Acciones rápidas -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-bolt"></i> Acciones Rápidas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('main.add_maintenance') }}" class="btn btn-primary w-100 mb-2">
+                                <i class="fas fa-plus"></i> Nuevo Mantenimiento
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-success w-100 mb-2" onclick="schedulePreventiveMaintenance()">
+                                <i class="fas fa-calendar-plus"></i> Programar Preventivo
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-warning w-100 mb-2" onclick="generateMaintenanceReport()">
+                                <i class="fas fa-file-alt"></i> Generar Reporte
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-info w-100 mb-2" onclick="checkMaintenanceSchedule()">
+                                <i class="fas fa-clock"></i> Ver Programación
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{{ url_for('main.admin') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Panel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function schedulePreventiveMaintenance() {
+    alert('Función para programar mantenimiento preventivo en desarrollo');
+}
+
+function generateMaintenanceReport() {
+    alert('Función para generar reporte de mantenimiento en desarrollo');
+}
+
+function checkMaintenanceSchedule() {
+    alert('Función para ver programación de mantenimiento en desarrollo');
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block title %}Administración de Vehículos y Maquinaria{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-car"></i> Administración de Vehículos y Maquinaria</h2>
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('main.add_vehiculo') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Agregar Vehículo
+            </a>
+            <a href="{{ url_for('main.add_maquinaria') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Agregar Maquinaria
+            </a>
+        </div>
+    </div>
+
+    <!-- Pestañas para navegar entre vehículos y maquinaria -->
+    <ul class="nav nav-tabs" id="vehiculosTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="vehiculos-tab" data-bs-toggle="tab" data-bs-target="#vehiculos" type="button" role="tab">
+                <i class="fas fa-car"></i> Vehículos ({{ vehiculos|length }})
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="maquinaria-tab" data-bs-toggle="tab" data-bs-target="#maquinaria" type="button" role="tab">
+                <i class="fas fa-cogs"></i> Maquinaria ({{ maquinarias|length }})
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3" id="vehiculosTabsContent">
+        <!-- Pestaña de Vehículos -->
+        <div class="tab-pane fade show active" id="vehiculos" role="tabpanel">
+            <h4 class="mb-3">Vehículos</h4>
+
+    {% if vehiculos %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Modelo</th>
+                    <th>Año</th>
+                    <th>Eficiencia</th>
+                    <th>Precio/Día</th>
+                    <th>Disponible</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vehiculo in vehiculos %}
+                <tr>
+                    <td>{{ vehiculo.id }}</td>
+                    <td>
+                        <img src="{{ url_for('static', filename='img/' ~ vehiculo.image_url) }}" 
+                             alt="{{ vehiculo.name }}" 
+                             class="img-thumbnail" 
+                             style="width: 60px; height: 60px; object-fit: cover;">
+                    </td>
+                    <td>{{ vehiculo.name }}</td>
+                    <td>{{ vehiculo.model }}</td>
+                    <td>{{ vehiculo.year }}</td>
+                    <td>{{ vehiculo.fuel_efficiency }} km/l</td>
+                    <td>{{ format_currency(vehiculo.price_per_day) }}</td>
+                    <td>
+                        {% if vehiculo.available %}
+                            <span class="badge bg-success">Sí</span>
+                        {% else %}
+                            <span class="badge bg-danger">No</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="{{ url_for('main.edit_vehiculo', id=vehiculo.id) }}" 
+                               class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <button type="button" 
+                                    class="btn btn-sm btn-danger" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#deleteModal{{ vehiculo.id }}">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Modal de confirmación para eliminar -->
+                <div class="modal fade" id="deleteModal{{ vehiculo.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirmar Eliminación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Estás seguro de que deseas eliminar el vehículo <strong>{{ vehiculo.name }} {{ vehiculo.model }}</strong>?
+                                <br><br>
+                                <small class="text-muted">Esta acción no se puede deshacer.</small>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <form method="POST" action="{{ url_for('main.delete_vehiculo', id=vehiculo.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <i class="fas fa-info-circle"></i> No hay vehículos registrados en el sistema.
+        <br>
+        <a href="{{ url_for('main.add_vehiculo') }}" class="btn btn-success mt-2">
+            <i class="fas fa-plus"></i> Agregar el primer vehículo
+        </a>
+    </div>
+    {% endif %}
+        </div>
+
+        <!-- Pestaña de Maquinaria -->
+        <div class="tab-pane fade" id="maquinaria" role="tabpanel">
+            <h4 class="mb-3">Maquinaria</h4>
+            {% if maquinarias %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Modelo</th>
+                            <th>Año</th>
+                            <th>Consumo</th>
+                            <th>Precio/Día</th>
+                            <th>Disponible</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for maquinaria in maquinarias %}
+                        <tr>
+                            <td>{{ maquinaria.id }}</td>
+                            <td>
+                                <img src="{{ url_for('static', filename='img/' ~ maquinaria.image_url) }}" 
+                                     alt="{{ maquinaria.name }}" 
+                                     class="img-thumbnail" 
+                                     style="width: 60px; height: 60px; object-fit: cover;">
+                            </td>
+                            <td>{{ maquinaria.name }}</td>
+                            <td>{{ maquinaria.model }}</td>
+                            <td>{{ maquinaria.year }}</td>
+                            <td>{{ maquinaria.fuel_efficiency }} km/l</td>
+                            <td>{{ format_currency(maquinaria.price_per_day) }}</td>
+                            <td>
+                                {% if maquinaria.available %}
+                                    <span class="badge bg-success">Sí</span>
+                                {% else %}
+                                    <span class="badge bg-danger">No</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('main.edit_maquinaria', id=maquinaria.id) }}" 
+                                       class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <button type="button" 
+                                            class="btn btn-sm btn-danger" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteMaquinariaModal{{ maquinaria.id }}">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Modal de confirmación para eliminar maquinaria -->
+                        <div class="modal fade" id="deleteMaquinariaModal{{ maquinaria.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirmar Eliminación</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        ¿Estás seguro de que deseas eliminar la maquinaria <strong>{{ maquinaria.name }} {{ maquinaria.model }}</strong>?
+                                        <br><br>
+                                        <small class="text-muted">Esta acción no se puede deshacer.</small>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <form method="POST" action="{{ url_for('main.delete_maquinaria', id=maquinaria.id) }}" class="d-inline">
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fas fa-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i> No hay maquinaria registrada en el sistema.
+                <br>
+                <a href="{{ url_for('main.add_maquinaria') }}" class="btn btn-success mt-2">
+                    <i class="fas fa-plus"></i> Agregar la primera maquinaria
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('main.admin') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver al Panel de Administración
+        </a>
+    </div>
+</div>
+{% endblock %} 

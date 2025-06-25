@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Reportes y Estadísticas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-chart-bar"></i> Reportes y Estadísticas</h2>
+            <p class="text-muted">Análisis detallado de ventas, ocupación y rendimiento del sistema.</p>
+            
+            <!-- Métricas principales -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h3>${{ "{:,.0f}".format(total_revenue) }}</h3>
+                            <p>Ingresos Totales</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h3>${{ "{:,.0f}".format(monthly_revenue) }}</h3>
+                            <p>Ingresos del Mes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body text-center">
+                            <h3>{{ reservations_by_status|length }}</h3>
+                            <p>Estados de Reserva</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vehículos más rentables -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-trophy"></i> Vehículos Más Rentables</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Vehículo</th>
+                                    <th>Modelo</th>
+                                    <th>Ingresos Totales</th>
+                                    <th>Número de Pagos</th>
+                                    <th>Promedio por Pago</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vehicle in vehicle_revenue %}
+                                <tr>
+                                    <td><strong>{{ vehicle.name }}</strong></td>
+                                    <td>{{ vehicle.model }}</td>
+                                    <td>${{ "{:,.0f}".format(vehicle.total_revenue) }}</td>
+                                    <td>{{ vehicle.total_payments }}</td>
+                                    <td>${{ "{:,.0f}".format(vehicle.total_revenue / vehicle.total_payments) if vehicle.total_payments > 0 else 0 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reservas por estado -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-pie-chart"></i> Reservas por Estado</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Estado</th>
+                                            <th>Cantidad</th>
+                                            <th>Porcentaje</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% set total_reservations = reservations_by_status|sum(attribute='count') %}
+                                        {% for status in reservations_by_status %}
+                                        <tr>
+                                            <td>
+                                                {% if status.status == 'pending' %}
+                                                    <span class="badge bg-warning">Pendiente</span>
+                                                {% elif status.status == 'confirmed' %}
+                                                    <span class="badge bg-info">Confirmada</span>
+                                                {% elif status.status == 'in_progress' %}
+                                                    <span class="badge bg-primary">En Progreso</span>
+                                                {% elif status.status == 'completed' %}
+                                                    <span class="badge bg-success">Completada</span>
+                                                {% elif status.status == 'cancelled' %}
+                                                    <span class="badge bg-danger">Cancelada</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">{{ status.status }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ status.count }}</td>
+                                            <td>{{ "%.1f"|format(status.count / total_reservations * 100) if total_reservations > 0 else 0 }}%</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-download"></i> Exportar Reportes</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-success" onclick="exportReport('sales')">
+                                    <i class="fas fa-file-excel"></i> Exportar Reporte de Ventas
+                                </button>
+                                <button class="btn btn-info" onclick="exportReport('reservations')">
+                                    <i class="fas fa-file-excel"></i> Exportar Reporte de Reservas
+                                </button>
+                                <button class="btn btn-warning" onclick="exportReport('users')">
+                                    <i class="fas fa-file-excel"></i> Exportar Reporte de Usuarios
+                                </button>
+                                <button class="btn btn-secondary" onclick="exportReport('vehicles')">
+                                    <i class="fas fa-file-excel"></i> Exportar Reporte de Vehículos
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtros de fecha -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-filter"></i> Filtros de Fecha</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" class="row">
+                        <div class="col-md-3">
+                            <label for="start_date" class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="end_date" class="form-label">Fecha Fin</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="report_type" class="form-label">Tipo de Reporte</label>
+                            <select class="form-select" id="report_type" name="report_type">
+                                <option value="sales">Ventas</option>
+                                <option value="reservations">Reservas</option>
+                                <option value="users">Usuarios</option>
+                                <option value="vehicles">Vehículos</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">&nbsp;</label>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Generar Reporte
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{{ url_for('main.admin') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Panel
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function exportReport(type) {
+    // Aquí se implementaría la lógica de exportación
+    alert('Función de exportación en desarrollo. Tipo: ' + type);
+}
+</script>
+{% endblock %} 
